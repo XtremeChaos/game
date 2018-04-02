@@ -1,4 +1,6 @@
 game
 ====
 
-A Symfony project created on March 30, 2018, 1:06 am.
+composer init
+
+php bin/console doctrine:schema:update --force
