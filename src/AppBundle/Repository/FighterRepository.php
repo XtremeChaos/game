@@ -38,18 +38,16 @@ class FighterRepository extends \Doctrine\ORM\EntityRepository
 
     public function findFightersNotInGameId($gameId)
     {
-        //@TODO nu vrea cu setParameter nici de al naibii
         $notIn = $this
             ->createQueryBuilder('f')
             ->join('f.gameFighters','gf')
-            ->where('gf.gameId = '.$gameId)
-//            ->where('gf.gameId = :id')
-//            ->setParameter('id',$gameId)
+            ->where('gf.gameId = :id')
             ->getQuery();
 
         return $this
             ->createQueryBuilder('ff')
             ->where( $this->createQueryBuilder('ff')->expr()->notIn('ff.id',$notIn->getDQL()) )
+            ->setParameter('id',$gameId)
             ->getQuery()
             ->getResult();
 

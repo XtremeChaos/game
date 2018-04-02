@@ -13,7 +13,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 //@TODO Cand se asociaza Game cu fighter cu team trebuie facut cu form builder
-//@TODO In FighterRepository metoda findFightersNotInGameId nu e atribuit cu set parameter... primesc eroare
 class GameController extends Controller
 {
     /**
