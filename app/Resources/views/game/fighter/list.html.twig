@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <a class="btn btn-success" href="{{ path('fighter_create') }}">Adauga Fighter</a>
+    <h2>Listare Jucatori</h2>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for fighter in fighters %}
+            <tr>
+                <th scope="row">{{ fighter.id }}</th>
+                <td>{{ fighter.name }}</td>
+                <td>{{ fighter.type }}</td>
+                <td>
+                    <a href="{{ path('fighter_details', {'id': fighter.id}) }}" class="btn btn-success">View</a>
+                    <a href="{{ path('fighter_edit', {'id': fighter.id}) }}" class="btn btn-warning">Edit</a>
+                    <a href="{{ path('fighter_delete', {'id': fighter.id}) }}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}

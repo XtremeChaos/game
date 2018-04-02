@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <a class="btn btn-success" href="{{ path('game_create') }}">Adauga Game</a>
+    <h2>Listare Games</h2>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for game in games %}
+            <tr>
+                <th scope="row">{{ game.id }}</th>
+                <td>{{ game.title }}</td>
+                <td>
+                    <a href="{{ path('game_details', {'id': game.id}) }}" class="btn btn-success">View</a>
+                    <a href="{{ path('game_list_fighters', {'id': game.id}) }}" class="btn btn-success">Adauga Jucator</a>
+                    <a href="{{ path('game_edit', {'id': game.id}) }}" class="btn btn-warning">Edit</a>
+                    <a href="{{ path('game_delete', {'id': game.id}) }}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}

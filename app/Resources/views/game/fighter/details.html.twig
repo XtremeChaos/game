@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <a class="btn btn-success" href="{{ path('fighter_list') }}">Inapoi La listare</a>
+    <h2>Vizualizare Luptator</h2>
+    <hr>
+    <h2 class="page-header">{{ fighter.name }}</h2>
+
+    <p>Viata: {{ fighter.health }}</p>
+    <p>Putere: {{ fighter.strength }}</p>
+    <p>Aparare: {{ fighter.defence }}</p>
+    <p>Viteza: {{ fighter.speed }}</p>
+    <p>Noroc: {{ fighter.luck }}</p>
+
+    <h2>Skills</h2>
+
+    {% for skill in fighter.skills %}
+        <p>Nume: {{ skill.name }}</p>
+        <p>Descriere: {{ skill.description }}</p>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <a class="btn btn-success" href="{{ path('game_list') }}">Inapoi La listare</a>
+    <h2>Vizualizare Joc</h2>
+    <hr>
+    <h2 class="page-header">{{ game.title }}</h2>
+    <p>{{ game.maxRound }}</p>
+
+    <p>Luptatori</p>
+    <ol>
+        {% for gameFighter in game.gameFighters %}
+            <li>
+                <p>Echipa : {{ gameFighter.team }}</p>
+                <p>Fighter : {{ gameFighter.fighter.name }}</p>
+
+                <h3>Skills</h3>
+                <ul>
+                    {% for skill in gameFighter.fighter.skills %}
+                        <li>{{ skill.name }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ol>
+
+{% endblock %}

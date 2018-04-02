@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <a class="btn btn-success" href="{{ path('skill_create') }}">Adauga Skill</a>
+    <h2>Listare Skilluri</h2>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Class Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for skill in skills %}
+            <tr>
+                <th scope="row">{{ skill.id }}</th>
+                <td>{{ skill.name }}</td>
+                <td>{{ skill.className }}</td>
+                <td>{{ skill.description }}</td>
+                <td>
+                    <a href="{{ path('skill_details', {'id': skill.id}) }}" class="btn btn-success">View</a>
+                    <a href="{{ path('skill_edit', {'id': skill.id}) }}" class="btn btn-warning">Edit</a>
+                    <a href="{{ path('skill_delete', {'id': skill.id}) }}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}
