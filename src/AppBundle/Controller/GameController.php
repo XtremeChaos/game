@@ -11,6 +11,7 @@ use AppBundle\Form\GameFighterType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Service\GameService;
 
 //@TODO Cand se asociaza Game cu fighter cu team trebuie facut cu form builder
 class GameController extends Controller
@@ -136,7 +137,8 @@ class GameController extends Controller
     /**
      * @Route("/game/add_fighter/{gameId}/{fighterId}/{team}", name="game_add_fighter")
      */
-    public function addFighterAction($gameId,$fighterId,$team){
+    public function addFighterAction($gameId,$fighterId,$team)
+    {
         $gameFighter = new GameFighter();
 
         $fighter = $this->getDoctrine()
@@ -159,5 +161,21 @@ class GameController extends Controller
         $this->addFlash('notice','Fighter Added To Game');
 
         return $this->redirectToRoute('game_list');
+    }
+
+    /**
+     * @Route("/game/start/{id}", name="game_start")
+     */
+    public function startGameAction($id, GameService $gameService)
+    {
+        $game = $this->getDoctrine()
+            ->getRepository(Game::class)
+            ->findComplete($id);
+
+        $game = $game[0];
+
+        $logs = $gameService->start($game);
+
+        return $this->render('game/game/log_game.html.twig',['logs' => $logs]);
     }
 }

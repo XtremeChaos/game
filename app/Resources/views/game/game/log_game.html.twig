@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <a class="btn btn-success" href="{{ path('game_create') }}">Adauga Game</a>
+    <h2>Log Joc Games</h2>
+
+    <ul>
+        {% for log in logs %}
+            <li>{{ log }}</li>
+        {% endfor %}
+    </ul>
+
+
+{% endblock %}
