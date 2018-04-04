@@ -8,12 +8,13 @@
     {% if not fighters %}
         <p>Nu sunt jucatori disponibili</p>
     {% endif %}
-    <ul>
+    <ul class="row">
     {% for fighter in fighters %}
-        <li>
-            <a href="{{ path('game_add_fighter', {gameId:gameId,fighterId:fighter.id,team:'white'}) }}">White :{{ fighter.id }}</a>
-            <a href="{{ path('game_add_fighter', {gameId:gameId,fighterId:fighter.id,team:'black'}) }}">Black :{{ fighter.id }}</a>
+        <li class="">
+            <a class="col-sm-6" href="{{ path('game_add_fighter', {gameId:gameId,fighterId:fighter.id,team:'white'}) }}">White :[{{ fighter.id }}]-{{ fighter.name }}</a>
+            <a class="col-sm-6" href="{{ path('game_add_fighter', {gameId:gameId,fighterId:fighter.id,team:'black'}) }}">Black :{{ fighter.id }}-{{ fighter.name }}</a>
         </li>
     {% endfor %}
     </ul>
+    </div>
 {% endblock %}

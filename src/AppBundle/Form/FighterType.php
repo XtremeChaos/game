@@ -17,13 +17,13 @@ class FighterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class, ['attr' => ['class' => 'form-control', 'style' => 'margin-bottom:15px']])
-            ->add('health', TextType::class, ['attr' => ['class' => 'form-control', 'style' => 'margin-bottom:15px']])
-            ->add('strength', TextType::class, ['attr' => ['class' => 'form-control', 'style' => 'margin-bottom:15px']])
-            ->add('defence', TextType::class, ['attr' => ['class' => 'form-control', 'style' => 'margin-bottom:15px']])
-            ->add('speed', TextType::class, ['attr' => ['class' => 'form-control', 'style' => 'margin-bottom:15px']])
-            ->add('luck', TextType::class, ['attr' => ['class' => 'form-control', 'style' => 'margin-bottom:15px']])
-            ->add('type', ChoiceType::class, ['choices' => ['Hero' => 'hero','Beast' => 'beast'], 'attr' => ['class' => 'form-control', 'style' => 'margin-bottom:15px']])
+            ->add('name', TextType::class)
+            ->add('health', TextType::class)
+            ->add('strength', TextType::class)
+            ->add('defence', TextType::class)
+            ->add('speed', TextType::class)
+            ->add('luck', TextType::class)
+            ->add('type', ChoiceType::class, ['choices' => ['Hero' => 'hero','Beast' => 'beast']])
             ->add('skills',EntityType::class,[
                 'class' => Skill::class,
                 'choice_label' => 'name',
@@ -31,7 +31,7 @@ class FighterType extends AbstractType
                 'expanded' => true,
                 'multiple' => true
             ])
-            ->add('save', SubmitType::class, ['label' => 'Update Fighter','attr' => ['class' => 'btn btn-primary', 'style' => 'margin-bottom:15px']])
+            ->add('save', SubmitType::class, ['label' => 'Update Fighter','attr' => ['class' => 'btn btn-primary']])
         ;
     }
 }

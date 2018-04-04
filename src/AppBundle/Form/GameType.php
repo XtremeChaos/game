@@ -16,8 +16,8 @@ class GameType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class, ['attr' => ['class' => 'form-control', 'style' => 'margin-bottom:15px']])
-            ->add('maxRound', NumberType::class, ['attr' => ['class' => 'form-control', 'style' => 'margin-bottom:15px']])
+            ->add('title', TextType::class)
+            ->add('maxRound', NumberType::class)
 //            ->add('gameFighters',EntityType::class,[
 //                'class' => GameFighter::class,
 //                'choice_label' => 'team',
@@ -25,7 +25,7 @@ class GameType extends AbstractType
 //                'expanded' => true,
 //                'multiple' => true
 //            ])
-            ->add('save', SubmitType::class, ['label' => 'Update Game','attr' => ['class' => 'btn btn-primary', 'style' => 'margin-bottom:15px']])
+            ->add('save', SubmitType::class, ['label' => 'Update Game','attr' => ['class' => 'btn btn-primary']])
         ;
     }
 }

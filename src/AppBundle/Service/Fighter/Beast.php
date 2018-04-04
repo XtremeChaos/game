@@ -3,10 +3,11 @@
 namespace AppBundle\Service\Fighter;
 
 use AppBundle\Entity\Fighter;
+use AppBundle\Service\Fighter\Skill\InterfaceSkillFacade;
 
 class Beast extends FighterService implements BaseFighter {
 
-    public function __construct($skillClass, Fighter $fighter = null ){
+    public function __construct(InterfaceSkillFacade $skillClass, Fighter $fighter = null ){
         try{
             parent::__construct($skillClass);
             $this->setName($fighter->getName());

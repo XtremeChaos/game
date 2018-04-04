@@ -6,6 +6,7 @@ use AppBundle\Service\Fighter\Action\Attack;
 use AppBundle\Service\Fighter\Skill\SkillFacade;
 use AppBundle\Service\GameLogs;
 use AppBundle\Service\GameUtils;
+use AppBundle\Service\Fighter\Skill\InterfaceSkillFacade;
 
 abstract class FighterService implements BaseFighter {
 
@@ -18,7 +19,7 @@ abstract class FighterService implements BaseFighter {
     private $luck;
     protected $skills;
 
-    public function __construct($skillClass){
+    public function __construct(InterfaceSkillFacade $skillClass){
         $this->skills = $skillClass;
     }
 

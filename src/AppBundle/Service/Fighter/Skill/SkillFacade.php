@@ -8,7 +8,7 @@ use AppBundle\Service\Fighter\Skill\Listing\Skill;
 use AppBundle\Entity\Skill as SkillEntity;
 use AppBundle\Service\GameUtils;
 
-class SkillFacade{
+class SkillFacade implements InterfaceSkillFacade{
 
     protected $attack = [];
     protected $defence = [];
@@ -68,7 +68,7 @@ class SkillFacade{
         return $triggered;
     }
 
-    public function modifyAttack( attack $attack = null, string $type = null ) : void {
+    public function modifyAttack( Attack $attack = null, string $type = null ) : void {
 
         $skills = $this->getTriggered( $type );
 

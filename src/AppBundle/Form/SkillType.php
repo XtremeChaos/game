@@ -12,10 +12,10 @@ class SkillType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class, ['attr' => ['class' => 'form-control', 'style' => 'margin-bottom:15px']])
-            ->add('className', ChoiceType::class, ['choices' => ['Magic Shield' => 'MagicShield','Rapid Strike' => 'RapidStrike','Berserk' => 'Berserk'], 'attr' => ['class' => 'form-control', 'style' => 'margin-bottom:15px']])
-            ->add('description', TextType::class, ['attr' => ['class' => 'form-control', 'style' => 'margin-bottom:15px']])
-            ->add('save', SubmitType::class, ['label' => 'Update Skill','attr' => ['class' => 'btn btn-primary', 'style' => 'margin-bottom:15px']])
+            ->add('name', TextType::class)
+            ->add('className', ChoiceType::class, ['choices' => ['Magic Shield' => 'MagicShield','Rapid Strike' => 'RapidStrike','Berserk' => 'Berserk']])
+            ->add('description', TextType::class)
+            ->add('save', SubmitType::class)
         ;
     }
 }

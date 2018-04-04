@@ -3,9 +3,10 @@
 namespace AppBundle\Service\Fighter;
 
 use AppBundle\Service\Fighter\Action\Attack;
+use AppBundle\Service\Fighter\Skill\InterfaceSkillFacade;
 
 interface BaseFighter{
-    function __construct($skillClass);
+    function __construct( InterfaceSkillFacade $skillClass);
     function setName( string $name ):void;
     function getName() : string ;
     function setHealth( float $health ): void;
