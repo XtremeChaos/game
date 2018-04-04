@@ -112,6 +112,11 @@ class GameController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $game = $em->getRepository(Game::class)->find($id);
+        $relations = $em->getRepository(GameFighter::class)->findBy(['gameId' => $id]);
+
+        foreach($relations as $relation){
+            $em->remove($relation);
+        }
 
         $em->remove($game);
         $em->flush();

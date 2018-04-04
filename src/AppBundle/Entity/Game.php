@@ -25,6 +25,8 @@ class Game
 
     /**
      * @Assert\NotBlank()
+     * @Assert\Type("alnum")
+     *
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=255)
@@ -33,6 +35,12 @@ class Game
 
     /**
      * @Assert\NotBlank()
+     * @Assert\Type("digit")
+     * @Assert\Range(
+     *      min = 5,
+     *      max = 1000
+     * )
+     *
      * @var int
      *
      * @ORM\Column(name="max_round", type="integer")

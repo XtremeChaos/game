@@ -52,4 +52,15 @@ class FighterRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
 
     }
+
+    public function findFightersInGameId($gameId)
+    {
+        return $this
+            ->createQueryBuilder('f')
+            ->join('f.gameFighters','gf')
+            ->where('gf.gameId = :id')
+            ->setParameter('id',$gameId)
+            ->getQuery()
+            ->getResult();
+    }
 }

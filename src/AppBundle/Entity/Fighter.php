@@ -26,6 +26,8 @@ class Fighter
 
     /**
      * @Assert\NotBlank()
+     * @Assert\Type("alnum")
+     *
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
@@ -34,6 +36,12 @@ class Fighter
 
     /**
      * @Assert\NotBlank()
+     * @Assert\Type("numeric")
+     * @Assert\Range(
+     *      min = 5,
+     *      max = 500
+     * )
+     *
      * @var string
      *
      * @ORM\Column(name="health", type="decimal", precision=7, scale=3)
@@ -41,6 +49,10 @@ class Fighter
     private $health;
 
     /**
+     * @Assert\NotBlank()
+     * @Assert\Type("numeric")
+     * @Assert\EqualTo(propertyPath="health")
+     *
      * @var string
      *
      * @ORM\Column(name="healthRemained", type="decimal", precision=7, scale=3)
@@ -49,6 +61,13 @@ class Fighter
 
     /**
      * @Assert\NotBlank()
+     * @Assert\Type("numeric")
+     * @Assert\GreaterThan(propertyPath="defence")
+     * @Assert\Range(
+     *      min = 5,
+     *      max = 500
+     * )
+     *
      * @var string
      *
      * @ORM\Column(name="strength", type="decimal", precision=7, scale=3)
@@ -57,6 +76,13 @@ class Fighter
 
     /**
      * @Assert\NotBlank()
+     * @Assert\Type("numeric")
+     * @Assert\LessThan(propertyPath="strength")
+     * @Assert\Range(
+     *      min = 5,
+     *      max = 500
+     * )
+     *
      * @var string
      *
      * @ORM\Column(name="defence", type="decimal", precision=7, scale=3)
@@ -65,6 +91,12 @@ class Fighter
 
     /**
      * @Assert\NotBlank()
+     * @Assert\Type("numeric")
+     * @Assert\Range(
+     *      min = 5,
+     *      max = 500
+     * )
+     *
      * @var string
      *
      * @ORM\Column(name="speed", type="decimal", precision=7, scale=3)
@@ -73,6 +105,13 @@ class Fighter
 
     /**
      * @Assert\NotBlank()
+     * @Assert\Type("numeric")
+     * @Assert\LessThan(50)
+     * @Assert\Range(
+     *      min = 5,
+     *      max = 500
+     * )
+     *
      * @var string
      *
      * @ORM\Column(name="luck", type="decimal", precision=7, scale=3)
@@ -81,6 +120,8 @@ class Fighter
 
     /**
      * @Assert\NotBlank()
+     * @Assert\Choice({"hero", "beast"})
+     *
      * @var \stdClass
      *
      * @ORM\Column(name="type", type="string", columnDefinition="enum('hero', 'beast')")
@@ -334,5 +375,6 @@ class Fighter
     {
         return $this->gameFighters;
     }
+
 }
 
