@@ -25,7 +25,7 @@ class Game
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Type("alnum")
+     * @Assert\Type("print")
      *
      * @var string
      *
@@ -35,7 +35,7 @@ class Game
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Type("digit")
+     * @Assert\Type("numeric")
      * @Assert\Range(
      *      min = 5,
      *      max = 1000

@@ -31,7 +31,6 @@ class SkillController extends Controller
      */
     public function createAction(Request $request)
     {
-
         $skill = new Skill();
 
         $form = $this->createForm(SkillType::class, $skill);

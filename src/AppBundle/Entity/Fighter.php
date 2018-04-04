@@ -26,7 +26,7 @@ class Fighter
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Type("alnum")
+     * @Assert\Type("print")
      *
      * @var string
      *
@@ -49,8 +49,6 @@ class Fighter
     private $health;
 
     /**
-     * @Assert\NotBlank()
-     * @Assert\Type("numeric")
      * @Assert\EqualTo(propertyPath="health")
      *
      * @var string

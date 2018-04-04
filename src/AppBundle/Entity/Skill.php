@@ -26,7 +26,7 @@ class Skill
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Type("alnum")
+     * @Assert\Type("print")
      *
      * @var string
      *
@@ -46,7 +46,7 @@ class Skill
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Type("alnum")
+     * @Assert\Type("print")
      *
      * @var string
      *
