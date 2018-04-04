@@ -4,12 +4,14 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Skill
  *
  * @ORM\Table(name="skills")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SkillRepository")
+ * @UniqueEntity("className")
  */
 class Skill
 {
@@ -38,7 +40,7 @@ class Skill
      *
      * @var string
      *
-     * @ORM\Column(name="className", type="string", columnDefinition="enum('MagicShield', 'RapidStrike', 'Berserk')")
+     * @ORM\Column(name="className", type="string", columnDefinition="enum('MagicShield', 'RapidStrike', 'Berserk')", unique=true)
      */
     private $className;
 
