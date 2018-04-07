@@ -11,42 +11,11 @@ use AppBundle\Service\Fighter\Skill\SkillFacade;
 
 class GameService
 {
-    public $whiteTeam = [];
-    public $blackTeam = [];
-    private $whiteTeamCurrentAttacker = 0;
-    private $blackTeamCurrentAttacker = 0;
-    private $round = 0;
-    private $endRound = 20;
 
-    private function increaseRound()
-    {
-        $this->round++;
-    }
-
-    private function getRound()
-    {
-        return $this->round;
-    }
-
-    public function setEndRound($endRound = null)
-    {
-        $this->endRound = $endRound;
-    }
-
-    private function getEndRound()
-    {
-        return $this->endRound;
-    }
-
-    private function addWhiteTeam(FighterService $fighter): void
-    {
-        array_push($this->whiteTeam, $fighter);
-    }
-
-    private function addBlackTeam(FighterService $fighter): void
-    {
-        array_push($this->blackTeam, $fighter);
-    }
+    /**
+     * @var Game $game
+     */
+    private $game;
 
     public function addPlayer(
         string $team = '',
@@ -63,10 +32,10 @@ class GameService
 
         switch ($team) {
             case 'white':
-                $this->addWhiteTeam($fighter);
+                $this->game->addWhiteTeam($fighter);
                 break;
             case 'black':
-                $this->addBlackTeam($fighter);
+                $this->game->addBlackTeam($fighter);
                 break;
         }
 
@@ -93,19 +62,21 @@ class GameService
 
     private function nextWhiteTeamAttacker(): void
     {
-        $this->whiteTeamCurrentAttacker += 1;
+        //@TODO set, get
+        $this->game->whiteTeamCurrentAttacker += 1;
 
-        if ($this->whiteTeamCurrentAttacker > count($this->whiteTeam) - 1) {
-            $this->whiteTeamCurrentAttacker = 0;
+        if ($this->game->whiteTeamCurrentAttacker > count($this->game->whiteTeam) - 1) {
+            $this->game->whiteTeamCurrentAttacker = 0;
         }
     }
 
     private function nextBlackTeamAttacker(): void
     {
-        $this->blackTeamCurrentAttacker += 1;
+        //@TODO set, get
+        $this->game->blackTeamCurrentAttacker += 1;
 
-        if ($this->blackTeamCurrentAttacker > count($this->blackTeam) - 1) {
-            $this->blackTeamCurrentAttacker = 0;
+        if ($this->game->blackTeamCurrentAttacker > count($this->game->blackTeam) - 1) {
+            $this->game->blackTeamCurrentAttacker = 0;
         }
     }
 
@@ -120,10 +91,11 @@ class GameService
         $index = null;
         switch ($team) {
             case 'white':
-                $index = $this->whiteTeamCurrentAttacker;
+                //@TODO get, set ..
+                $index = $this->game->whiteTeamCurrentAttacker;
                 break;
             case 'black':
-                $index = $this->blackTeamCurrentAttacker;
+                $index = $this->game->blackTeamCurrentAttacker;
                 break;
         }
         return $index;
@@ -142,12 +114,13 @@ class GameService
 
     private function removeFromTeam(string $team = '', int $index = null): void
     {
+        //@TODO metoda in entitate de scoatere din echipa
         switch ($team) {
             case 'white':
-                unset($this->whiteTeam[$index]);
+                unset($this->game->whiteTeam[$index]);
                 break;
             case 'black':
-                unset($this->blackTeam[$index]);
+                unset($this->game->blackTeam[$index]);
                 break;
         }
         $this->sortTeam($team);
@@ -180,7 +153,7 @@ class GameService
 
     private function sortTeam(string $team = ''): void
     {
-        usort($this->{$team . 'Team'}, array('\AppBundle\Service\GameService', 'compareFightersSpeeds'));
+        usort($this->game->{$team . 'Team'}, array('\AppBundle\Service\GameService', 'compareFightersSpeeds'));
     }
 
     public function getTeam(string $team): array
@@ -188,23 +161,13 @@ class GameService
         $fighters = [];
         switch ($team) {
             case 'white':
-                $fighters = $this->getWhiteTeam();
+                $fighters = $this->game->getWhiteTeam();
                 break;
             case 'black':
-                $fighters = $this->getBlackTeam();
+                $fighters = $this->game->getBlackTeam();
                 break;
         }
         return $fighters;
-    }
-
-    private function getWhiteTeam(): array
-    {
-        return $this->whiteTeam;
-    }
-
-    private function getBlackTeam(): array
-    {
-        return $this->blackTeam;
     }
 
     private function compareFightersSpeeds(FighterService $fighterA, FighterService $fighterB): int
@@ -224,7 +187,7 @@ class GameService
 
     private function checkEndGameByRound(): bool
     {
-        return $this->getRound() > $this->getEndRound();
+        return $this->game->getRound() > $this->game->getMaxRound();
     }
 
 
@@ -237,7 +200,7 @@ class GameService
 
         $startTeamName = $this->checkFirstAttacker( $fastestWhiteFighter, $fastestBlackFighter );
 
-        GameLogs::addStats(['white'=> $this->getWhiteTeam(), 'black' => $this->getBlackTeam()]);
+        GameLogs::addStats(['white'=> $this->game->getWhiteTeam(), 'black' => $this->game->getBlackTeam()]);
         GameLogs::add('Incepe echipa '.$startTeamName);
 
         $game = $this->startRound($startTeamName);
@@ -249,17 +212,17 @@ class GameService
 
         GameLogs::add('Jocul s-a terminat');
 
-        GameLogs::addStats(['white'=> $this->getWhiteTeam(), 'black' => $this->getBlackTeam()]);
+        GameLogs::addStats(['white'=> $this->game->getWhiteTeam(), 'black' => $this->game->getBlackTeam()]);
         return true;
     }
 
     private function startRound( string $startTeam = '' ) : bool {
-        $this->increaseRound();
+        $this->game->increaseRound();
         if( $this->checkEndGameByRound() ){
-            GameLogs::add("Runda {$this->getEndRound()} s-a incheiat. Este egalitate");
+            GameLogs::add("Runda {$this->game->getMaxRound()} s-a incheiat. Este egalitate");
             return true;
         }
-        GameLogs::add("Incepe runda {$this->getRound()} ");
+        GameLogs::add("Incepe runda {$this->game->getRound()} ");
         switch ($startTeam){
             case 'white':
                 $attacker = $this->getTeamAttacker('white');
@@ -315,9 +278,9 @@ class GameService
 
     public function start(Game $game)
     {
-        $this->setEndRound($game->getMaxRound());
+        $this->game = $game;
 
-        foreach ($game->getGameFighters() as $fighter) {
+        foreach ($this->game->getGameFighters() as $fighter) {
             $this->addPlayer($fighter->getTeam(),$fighter->getFighter());
         }
 

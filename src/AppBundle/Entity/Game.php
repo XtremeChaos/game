@@ -52,6 +52,13 @@ class Game
      */
     protected $gameFighters;
 
+    public $whiteTeam = [];
+    public $blackTeam = [];
+    public $whiteTeamCurrentAttacker = 0;
+    public $blackTeamCurrentAttacker = 0;
+    public $round = 0;
+    public $endRound = 20;
+
     public function __construct()
     {
         $this->gameFighters = new ArrayCollection();
@@ -116,6 +123,39 @@ class Game
     public function getGameFighters()
     {
         return $this->gameFighters;
+    }
+
+    /**
+     * @TODO
+     */
+    public function addWhiteTeam($fighter): void
+    {
+        array_push($this->whiteTeam, $fighter);
+    }
+
+    public function addBlackTeam($fighter): void
+    {
+        array_push($this->blackTeam, $fighter);
+    }
+
+    public function increaseRound()
+    {
+        $this->round++;
+    }
+
+    public function getRound()
+    {
+        return $this->round;
+    }
+
+    public function getWhiteTeam(): array
+    {
+        return $this->whiteTeam;
+    }
+
+    public function getBlackTeam(): array
+    {
+        return $this->blackTeam;
     }
 
 }
