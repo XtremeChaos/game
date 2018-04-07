@@ -4,14 +4,11 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Fighter;
 use AppBundle\Entity\Game;
-use AppBundle\Service\Fighter\Hero;
-use AppBundle\Service\Fighter\Beast;
 use AppBundle\Service\Fighter\FighterService;
 use AppBundle\Service\Fighter\Skill\SkillService;
 
 class GameService
 {
-
     /**
      * @var Game $game
      */
@@ -24,7 +21,8 @@ class GameService
     public function addPlayer(
         string $team = '',
         Fighter $fighter
-    ): void {
+    ): void
+    {
 
         $fighter->addSkillService(new SkillService());
 
@@ -189,39 +187,41 @@ class GameService
     }
 
 
-    public function startGame() : bool {
+    public function startGame(): bool
+    {
         $this->sortTeam('white');
         $this->sortTeam('black');
 
         $fastestWhiteFighter = $this->getFastestFighter('white');
         $fastestBlackFighter = $this->getFastestFighter('black');
 
-        $startTeamName = $this->checkFirstAttacker( $fastestWhiteFighter, $fastestBlackFighter );
+        $startTeamName = $this->checkFirstAttacker($fastestWhiteFighter, $fastestBlackFighter);
 
-        GameLogs::addStats(['white'=> $this->game->getWhiteTeam(), 'black' => $this->game->getBlackTeam()]);
-        GameLogs::add('Incepe echipa '.$startTeamName);
+        GameLogs::addStats(['white' => $this->game->getWhiteTeam(), 'black' => $this->game->getBlackTeam()]);
+        GameLogs::add('Incepe echipa ' . $startTeamName);
 
         $game = $this->startRound($startTeamName);
 
-        if( $game === false ){
+        if ($game === false) {
             GameLogs::add('A aparut o problema');
             return false;
         }
 
         GameLogs::add('Jocul s-a terminat');
 
-        GameLogs::addStats(['white'=> $this->game->getWhiteTeam(), 'black' => $this->game->getBlackTeam()]);
+        GameLogs::addStats(['white' => $this->game->getWhiteTeam(), 'black' => $this->game->getBlackTeam()]);
         return true;
     }
 
-    private function startRound( string $startTeam = '' ) : bool {
+    private function startRound(string $startTeam = ''): bool
+    {
         $this->game->increaseRound();
-        if( $this->checkEndGameByRound() ){
+        if ($this->checkEndGameByRound()) {
             GameLogs::add("Runda {$this->game->getMaxRound()} s-a incheiat. Este egalitate");
             return true;
         }
         GameLogs::add("Incepe runda {$this->game->getRound()} ");
-        switch ($startTeam){
+        switch ($startTeam) {
             case 'white':
                 $attacker = $this->getTeamAttacker('white');
                 $defender = $this->getTeamDefender('black');
@@ -229,13 +229,13 @@ class GameService
                 GameLogs::add("Ataca {$attacker->getName()} cu puterea {$attacker->getStrength()} pe {$defender->getName()} care are {$defender->getDefence()} aparare si {$defender->getHealthRemained()} viata ramasa");
                 $attack = $this->fighterService->attack($attacker);
 
-                $this->fighterService->defend($defender,$attack);
+                $this->fighterService->defend($defender, $attack);
 
-                if( $this->fighterService->isDead($defender) ){
-                    GameLogs::add('A murit membrul echipei Black : '.$defender->getName());
-                    $this->removeFromTeam('black',0);
+                if ($this->fighterService->isDead($defender)) {
+                    GameLogs::add('A murit membrul echipei Black : ' . $defender->getName());
+                    $this->removeFromTeam('black', 0);
 
-                    if( !$this->hasTeamMembers('black') ){
+                    if (!$this->hasTeamMembers('black')) {
                         GameLogs::add('Echipa Black a pierdut !');
                         return true;
                     }
@@ -246,20 +246,20 @@ class GameService
                 return $this->startRound('black');
                 break;
             case 'black':
-                $attacker = $this->getTeamAttacker( 'black' );
+                $attacker = $this->getTeamAttacker('black');
                 $defender = $this->getTeamDefender('white');
 
                 GameLogs::add("Ataca {$attacker->getName()} cu puterea {$attacker->getStrength()} pe {$defender->getName()} care are {$defender->getDefence()} aparare si {$defender->getHealthRemained()} viata ramasa");
                 $attack = $this->fighterService->attack($attacker);
 
-                $this->fighterService->defend($defender,$attack);
+                $this->fighterService->defend($defender, $attack);
 
-                if( $this->fighterService->isDead($defender) ){
-                    GameLogs::add('A murit membrul echipei White : '.$defender->getName());
+                if ($this->fighterService->isDead($defender)) {
+                    GameLogs::add('A murit membrul echipei White : ' . $defender->getName());
 
-                    $this->removeFromTeam('white',0 );
+                    $this->removeFromTeam('white', 0);
 
-                    if( !$this->hasTeamMembers('white') ){
+                    if (!$this->hasTeamMembers('white')) {
                         GameLogs::add('Echipa White a pierdut !!');
                         return true;
                     }
@@ -280,7 +280,7 @@ class GameService
         $this->fighterService = $fighterService;
 
         foreach ($this->game->getGameFighters() as $fighter) {
-            $this->addPlayer($fighter->getTeam(),$fighter->getFighter());
+            $this->addPlayer($fighter->getTeam(), $fighter->getFighter());
         }
 
         $this->startGame();
