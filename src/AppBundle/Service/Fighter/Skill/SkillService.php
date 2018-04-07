@@ -4,11 +4,10 @@ namespace AppBundle\Service\Fighter\Skill;
 
 use AppBundle\Entity\Attack;
 use AppBundle\Service\GameLogs;
-use AppBundle\Service\Fighter\Skill\Listing\Skill;
-use AppBundle\Entity\Skill as SkillEntity;
+use AppBundle\Entity\Skill;
 use AppBundle\Service\GameUtils;
 
-class SkillFacade implements InterfaceSkillFacade{
+class SkillService{
 
     protected $attack = [];
     protected $defence = [];
@@ -28,14 +27,8 @@ class SkillFacade implements InterfaceSkillFacade{
     public function add( $skills ) : void {
         foreach ( $skills as $skill ) {
             /**
-             * @var SkillEntity $skill
-             */
-            $skill_name = $skill->getClassName();
-            $skill_class = '\AppBundle\Service\Fighter\Skill\Listing\\'.$skill_name;
-            /**
              * @var Skill $skill
              */
-            $skill = new $skill_class();
             switch ( $skill->getType() ){
                 case 'attack':
                     $this->addToAttack($skill);
@@ -47,11 +40,11 @@ class SkillFacade implements InterfaceSkillFacade{
         }
     }
 
-    private function addToDefence( skill $skill ) : void {
+    private function addToDefence( Skill $skill ) : void {
         array_push($this->defence,$skill);
     }
 
-    private function addToAttack( skill $skill ) : void {
+    private function addToAttack( Skill $skill ) : void {
         array_push($this->attack,$skill);
     }
 
@@ -77,7 +70,7 @@ class SkillFacade implements InterfaceSkillFacade{
              * @var skill $skill
              */
             GameLogs::add( "Se activeaza skill-ul ".$skill->getName()." celui care  ".($skill->getType() == 'attack' ? 'ataca' : 'se apara ') );
-            $skill->run( $attack );
+            $this->run($skill, $attack );
         }
 
     }
@@ -93,6 +86,23 @@ class SkillFacade implements InterfaceSkillFacade{
                 break;
         }
         return $skills;
+    }
+
+    public function run(Skill $skill, Attack $attack)
+    {
+        $skills = [
+            'MagicShield' => function(Attack $attack){
+                $attack->setMultiplier($attack->getMultiplier() / 2);
+            },
+            'RapidStrike' => function(Attack $attack){
+                $attack->setMultiplier($attack->getMultiplier() + 1);
+            },
+            'Berserk' => function(Attack $attack){
+                $attack->setStrength( $attack->getStrength() * 1.5 );
+            }
+        ];
+
+        $skills[$skill->getClassName()]($attack);
     }
 }
 

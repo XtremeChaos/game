@@ -19,7 +19,7 @@ class FighterService
     {
         $attack = new Attack($fighter->getStrength());
 
-        $fighter->skillFacade->modifyAttack($attack, 'attack');
+        $fighter->skillService->modifyAttack($attack, 'attack');
 
         return $attack;
     }
@@ -31,7 +31,7 @@ class FighterService
             return;
         }
 
-        $fighter->skillFacade->modifyAttack($attack, 'defence');
+        $fighter->skillService->modifyAttack($attack, 'defence');
 
         $this->takeDamage($fighter, $attack);
     }
@@ -62,6 +62,6 @@ class FighterService
 
     public function getSkills(Fighter $fighter): array
     {
-        return $fighter->skillFacade->getAll();
+        return $fighter->skillService->getAll();
     }
 }

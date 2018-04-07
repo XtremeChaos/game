@@ -7,7 +7,7 @@ use AppBundle\Entity\Game;
 use AppBundle\Service\Fighter\Hero;
 use AppBundle\Service\Fighter\Beast;
 use AppBundle\Service\Fighter\FighterService;
-use AppBundle\Service\Fighter\Skill\SkillFacade;
+use AppBundle\Service\Fighter\Skill\SkillService;
 
 class GameService
 {
@@ -25,16 +25,8 @@ class GameService
         string $team = '',
         Fighter $fighter
     ): void {
-//        switch ($fighter->getType()) {
-//            case 'hero':
-//                $fighter = new Hero(new SkillFacade(), $fighter);
-//                break;
-//            case 'beast':
-//                $fighter = new Beast(new SkillFacade(), $fighter);
-//                break;
-//        }
 
-        $fighter->setSkillFacade(new SkillFacade());
+        $fighter->addSkillService(new SkillService());
 
         switch ($team) {
             case 'white':

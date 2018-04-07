@@ -2,9 +2,8 @@
 
 namespace AppBundle\Service;
 
-use AppBundle\Service\Fighter\FighterService;
 use AppBundle\Entity\Fighter;
-use AppBundle\Service\Fighter\Skill\Listing\Skill;
+use AppBundle\Entity\Skill;
 
 class GameLogs{
 
@@ -42,12 +41,11 @@ class GameLogs{
                     'luck' => $fighter->getLuck(),
                     'skills' => []
                 ];
-                //@TODO
                 foreach( $fighter->getSkills() as $skill ){
                     self::$stats[$c][$team_type]['fighters'][$k]['skills'][] = [
-//                        'type' => $skill->getType(),
+                        'type' => $skill->getType(),
                         'name' => $skill->getName(),
-//                        'chance' => $skill->getChance()
+                        'chance' => $skill->getChance()
                     ];
                 }
                 $k++;
