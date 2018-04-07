@@ -16,19 +16,25 @@ class GameService
      * @var Game $game
      */
     private $game;
+    /**
+     * @var FighterService $fighterService
+     */
+    private $fighterService;
 
     public function addPlayer(
         string $team = '',
         Fighter $fighter
     ): void {
-        switch ($fighter->getType()) {
-            case 'hero':
-                $fighter = new Hero(new SkillFacade(), $fighter);
-                break;
-            case 'beast':
-                $fighter = new Beast(new SkillFacade(), $fighter);
-                break;
-        }
+//        switch ($fighter->getType()) {
+//            case 'hero':
+//                $fighter = new Hero(new SkillFacade(), $fighter);
+//                break;
+//            case 'beast':
+//                $fighter = new Beast(new SkillFacade(), $fighter);
+//                break;
+//        }
+
+        $fighter->setSkillFacade(new SkillFacade());
 
         switch ($team) {
             case 'white':
@@ -80,7 +86,7 @@ class GameService
         }
     }
 
-    private function getTeamDefender(string $team = ''): FighterService
+    private function getTeamDefender(string $team = ''): Fighter
     {
         $fighters = $this->getTeam($team);
         return $fighters[0];
@@ -101,7 +107,7 @@ class GameService
         return $index;
     }
 
-    private function getTeamAttacker(string $team = ''): FighterService
+    private function getTeamAttacker(string $team = ''): Fighter
     {
         $teamFighters = $this->getTeam($team);
         $current = $this->getTeamCurrentAttackerIndex($team);
@@ -126,14 +132,14 @@ class GameService
         $this->sortTeam($team);
     }
 
-    private function getFastestFighter(string $team): FighterService
+    private function getFastestFighter(string $team): Fighter
     {
         $fighters = $this->getTeam($team);
         $fastestFighter = null;
         $fighterBestSpeed = 0;
         foreach ($fighters as $fighter) {
             /**
-             * @var FighterService $fighter
+             * @var Fighter $fighter
              */
             if ($fighter->getSpeed() > $fighterBestSpeed) {
                 $fighterBestSpeed = $fighter->getSpeed();
@@ -143,7 +149,7 @@ class GameService
         return $fastestFighter;
     }
 
-    private function checkFirstAttacker(FighterService $white, FighterService $black): string
+    private function checkFirstAttacker(Fighter $white, Fighter $black): string
     {
         if ($white->getSpeed() == $black->getSpeed()) {
             return $white->getLuck() >= $black->getLuck() ? 'white' : 'black';
@@ -170,7 +176,7 @@ class GameService
         return $fighters;
     }
 
-    private function compareFightersSpeeds(FighterService $fighterA, FighterService $fighterB): int
+    private function compareFightersSpeeds(Fighter $fighterA, Fighter $fighterB): int
     {
         if ($fighterA->getSpeed() == $fighterB->getSpeed()) {
             if ($fighterA->getLuck() == $fighterB->getLuck()) {
@@ -229,11 +235,11 @@ class GameService
                 $defender = $this->getTeamDefender('black');
 
                 GameLogs::add("Ataca {$attacker->getName()} cu puterea {$attacker->getStrength()} pe {$defender->getName()} care are {$defender->getDefence()} aparare si {$defender->getHealthRemained()} viata ramasa");
-                $attack = $attacker->attack();
+                $attack = $this->fighterService->attack($attacker);
 
-                $defender->defend($attack);
+                $this->fighterService->defend($defender,$attack);
 
-                if( $defender->isDead() ){
+                if( $this->fighterService->isDead($defender) ){
                     GameLogs::add('A murit membrul echipei Black : '.$defender->getName());
                     $this->removeFromTeam('black',0);
 
@@ -252,11 +258,11 @@ class GameService
                 $defender = $this->getTeamDefender('white');
 
                 GameLogs::add("Ataca {$attacker->getName()} cu puterea {$attacker->getStrength()} pe {$defender->getName()} care are {$defender->getDefence()} aparare si {$defender->getHealthRemained()} viata ramasa");
-                $attack = $attacker->attack();
+                $attack = $this->fighterService->attack($attacker);
 
-                $defender->defend($attack);
+                $this->fighterService->defend($defender,$attack);
 
-                if( $defender->isDead() ){
+                if( $this->fighterService->isDead($defender) ){
                     GameLogs::add('A murit membrul echipei White : '.$defender->getName());
 
                     $this->removeFromTeam('white',0 );
@@ -276,9 +282,10 @@ class GameService
 
     }
 
-    public function start(Game $game)
+    public function start(Game $game, FighterService $fighterService)
     {
         $this->game = $game;
+        $this->fighterService = $fighterService;
 
         foreach ($this->game->getGameFighters() as $fighter) {
             $this->addPlayer($fighter->getTeam(),$fighter->getFighter());

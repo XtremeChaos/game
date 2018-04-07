@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\AppBundle;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -137,6 +138,10 @@ class Fighter
      */
     protected $gameFighters;
 
+    /**
+     * @var \AppBundle\Service\Fighter\Skill\SkillFacade $skillFacade
+     */
+    public $skillFacade;
 
     public function __construct()
     {
@@ -346,7 +351,6 @@ class Fighter
         return $this->type;
     }
 
-
     /**
      * @return mixed
      */
@@ -374,5 +378,11 @@ class Fighter
         return $this->gameFighters;
     }
 
+    /**
+     * @TODO
+     */
+    public function setSkillFacade($skillFacade){
+        $this->skillFacade = $skillFacade;
+    }
 }
 
