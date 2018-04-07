@@ -2,7 +2,7 @@
 
 namespace AppBundle\Service\Fighter\Skill;
 
-use AppBundle\Service\Fighter\Action\Attack;
+use AppBundle\Entity\Attack;
 
 interface InterfaceSkillFacade
 {

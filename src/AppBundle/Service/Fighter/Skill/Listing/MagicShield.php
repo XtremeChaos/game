@@ -2,7 +2,7 @@
 
 namespace AppBundle\Service\Fighter\Skill\Listing;
 
-use AppBundle\Service\Fighter\Action\Attack;
+use AppBundle\Entity\Attack;
 
 class MagicShield implements Skill
 {

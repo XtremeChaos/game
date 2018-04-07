@@ -2,7 +2,7 @@
 
 namespace AppBundle\Service\Fighter\Skill;
 
-use AppBundle\Service\Fighter\Action\Attack;
+use AppBundle\Entity\Attack;
 use AppBundle\Service\GameLogs;
 use AppBundle\Service\Fighter\Skill\Listing\Skill;
 use AppBundle\Entity\Skill as SkillEntity;

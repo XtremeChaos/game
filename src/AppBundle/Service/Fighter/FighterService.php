@@ -3,7 +3,7 @@
 namespace AppBundle\Service\Fighter;
 
 use AppBundle\Entity\Fighter;
-use AppBundle\Service\Fighter\Action\Attack;
+use AppBundle\Entity\Attack;
 use AppBundle\Service\GameLogs;
 use AppBundle\Service\GameUtils;
 
