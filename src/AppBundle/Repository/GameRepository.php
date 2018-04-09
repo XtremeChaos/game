@@ -21,6 +21,7 @@ class GameRepository extends \Doctrine\ORM\EntityRepository
             ->addSelect('f')
             ->addSelect('s')
             ->where('g.id = :id')
+            ->orderBy('gf.team, f.speed','desc')
             ->setParameter('id',$id)
             ->getQuery()
             ->getResult();

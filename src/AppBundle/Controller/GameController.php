@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Service\GameService;
 use AppBundle\Service\Fighter\FighterService;
+use AppBundle\Service\Fighter\Skill\SkillService;
 
 //@TODO Cand se asociaza Game cu fighter cu team trebuie facut cu form builder
 class GameController extends Controller
@@ -171,7 +172,7 @@ class GameController extends Controller
     /**
      * @Route("/game/start/{id}", name="game_start")
      */
-    public function startGameAction($id, GameService $gameService, FighterService $fighterService)
+    public function startGameAction($id, GameService $gameService, FighterService $fighterService, SkillService $skillService)
     {
         $game = $this->getDoctrine()
             ->getRepository(Game::class)
@@ -179,7 +180,7 @@ class GameController extends Controller
 
         $game = $game[0];
 
-        $logs = $gameService->start($game,$fighterService);
+        $logs = $gameService->start($game,$fighterService,$skillService);
 
         return $this->render('game/game/log_game.html.twig', ['logs' => $logs]);
     }

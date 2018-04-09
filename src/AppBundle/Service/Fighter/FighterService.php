@@ -6,6 +6,7 @@ use AppBundle\Entity\Fighter;
 use AppBundle\Entity\Attack;
 use AppBundle\Service\GameLogs;
 use AppBundle\Service\GameUtils;
+use AppBundle\Service\Fighter\Skill\SkillService;
 
 class FighterService
 {
@@ -15,23 +16,23 @@ class FighterService
         return $fighter->getHealthRemained() <= 0;
     }
 
-    public function attack(Fighter $fighter): Attack
+    public function attack(SkillService $skillService, Fighter $fighter): Attack
     {
         $attack = new Attack($fighter->getStrength());
 
-        $fighter->skillService->modifyAttack($attack, 'attack');
+        $skillService->modifyAttack($attack, 'attack');
 
         return $attack;
     }
 
-    public function defend(Fighter $fighter, Attack $attack): void
+    public function defend(SkillService $skillService, Fighter $fighter, Attack $attack): void
     {
         if ($this->hasLuck($fighter)) {
             GameLogs::add($fighter->getName() . ' a avut noroc si nu a fost lovit');
             return;
         }
 
-        $fighter->skillService->modifyAttack($attack, 'defence');
+        $skillService->modifyAttack($attack, 'defence');
 
         $this->takeDamage($fighter, $attack);
     }

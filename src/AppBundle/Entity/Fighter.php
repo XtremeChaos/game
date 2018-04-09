@@ -379,12 +379,5 @@ class Fighter
         return $this->gameFighters;
     }
 
-    /**
-     * @TODO
-     */
-    public function addSkillService($skillService){
-        $this->skillService = $skillService;
-        $this->skillService->add($this->getSkills());
-    }
 }
 

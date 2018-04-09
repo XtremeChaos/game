@@ -52,8 +52,6 @@ class Game
      */
     protected $gameFighters;
 
-    public $whiteTeam = [];
-    public $blackTeam = [];
     public $whiteTeamCurrentAttacker = 0;
     public $blackTeamCurrentAttacker = 0;
     public $round = 0;
@@ -128,15 +126,6 @@ class Game
     /**
      * @TODO
      */
-    public function addWhiteTeam($fighter): void
-    {
-        array_push($this->whiteTeam, $fighter);
-    }
-
-    public function addBlackTeam($fighter): void
-    {
-        array_push($this->blackTeam, $fighter);
-    }
 
     public function increaseRound()
     {
@@ -148,14 +137,60 @@ class Game
         return $this->round;
     }
 
-    public function getWhiteTeam(): array
+    /**
+     * @return int
+     */
+    public function getWhiteTeamCurrentAttacker(): int
     {
-        return $this->whiteTeam;
+        return $this->whiteTeamCurrentAttacker;
     }
 
-    public function getBlackTeam(): array
+    /**
+     * @param int $whiteTeamCurrentAttacker
+     * @return Game
+     */
+    public function setWhiteTeamCurrentAttacker(int $whiteTeamCurrentAttacker): Game
     {
-        return $this->blackTeam;
+        $this->whiteTeamCurrentAttacker = $whiteTeamCurrentAttacker;
+        return $this;
     }
+
+    /**
+     * @return int
+     */
+    public function getBlackTeamCurrentAttacker(): int
+    {
+        return $this->blackTeamCurrentAttacker;
+    }
+
+    /**
+     * @param int $blackTeamCurrentAttacker
+     * @return Game
+     */
+    public function setBlackTeamCurrentAttacker(int $blackTeamCurrentAttacker)
+    {
+        $this->blackTeamCurrentAttacker = $blackTeamCurrentAttacker;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEndRound(): int
+    {
+        return $this->endRound;
+    }
+
+    /**
+     * @param int $endRound
+     * @return Game
+     */
+    public function setEndRound(int $endRound)
+    {
+        $this->endRound = $endRound;
+        return $this;
+    }
+
+
 
 }
