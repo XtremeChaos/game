@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Service\Fighter\Action;
+namespace AppBundle\Entity;
 
 class Attack{
     private $strength;

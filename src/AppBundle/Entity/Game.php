@@ -52,6 +52,11 @@ class Game
      */
     protected $gameFighters;
 
+    public $whiteTeamCurrentAttacker = 0;
+    public $blackTeamCurrentAttacker = 0;
+    public $round = 0;
+    public $endRound = 20;
+
     public function __construct()
     {
         $this->gameFighters = new ArrayCollection();
@@ -117,5 +122,75 @@ class Game
     {
         return $this->gameFighters;
     }
+
+    /**
+     * @TODO
+     */
+
+    public function increaseRound()
+    {
+        $this->round++;
+    }
+
+    public function getRound()
+    {
+        return $this->round;
+    }
+
+    /**
+     * @return int
+     */
+    public function getWhiteTeamCurrentAttacker(): int
+    {
+        return $this->whiteTeamCurrentAttacker;
+    }
+
+    /**
+     * @param int $whiteTeamCurrentAttacker
+     * @return Game
+     */
+    public function setWhiteTeamCurrentAttacker(int $whiteTeamCurrentAttacker): Game
+    {
+        $this->whiteTeamCurrentAttacker = $whiteTeamCurrentAttacker;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBlackTeamCurrentAttacker(): int
+    {
+        return $this->blackTeamCurrentAttacker;
+    }
+
+    /**
+     * @param int $blackTeamCurrentAttacker
+     * @return Game
+     */
+    public function setBlackTeamCurrentAttacker(int $blackTeamCurrentAttacker)
+    {
+        $this->blackTeamCurrentAttacker = $blackTeamCurrentAttacker;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEndRound(): int
+    {
+        return $this->endRound;
+    }
+
+    /**
+     * @param int $endRound
+     * @return Game
+     */
+    public function setEndRound(int $endRound)
+    {
+        $this->endRound = $endRound;
+        return $this;
+    }
+
+
 
 }

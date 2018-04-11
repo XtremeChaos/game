@@ -2,130 +2,67 @@
 
 namespace AppBundle\Service\Fighter;
 
-use AppBundle\Service\Fighter\Action\Attack;
-use AppBundle\Service\Fighter\Skill\SkillFacade;
+use AppBundle\Entity\Fighter;
+use AppBundle\Entity\Attack;
 use AppBundle\Service\GameLogs;
 use AppBundle\Service\GameUtils;
-use AppBundle\Service\Fighter\Skill\InterfaceSkillFacade;
+use AppBundle\Service\Fighter\Skill\SkillService;
 
-abstract class FighterService implements BaseFighter {
+class FighterService
+{
 
-    private $name;
-    private $health;
-    private $healthRemained;
-    private $strength;
-    private $defence;
-    private $speed;
-    private $luck;
-    protected $skills;
-
-    public function __construct(InterfaceSkillFacade $skillClass){
-        $this->skills = $skillClass;
+    public function isDead(Fighter $fighter): bool
+    {
+        return $fighter->getHealthRemained() <= 0;
     }
 
-    public function setName( string $name = null ) : void{
-        $this->name = $name;
-    }
+    public function attack(SkillService $skillService, Fighter $fighter): Attack
+    {
+        $attack = new Attack($fighter->getStrength());
 
-    public function getName() : string {
-        return $this->name;
-    }
-
-    public function setHealth( float $health = null ) : void{
-        $this->health = $health;
-    }
-
-    public function getHealth() : float{
-        return $this->health;
-    }
-
-    public function setHealthRemained( float $healthRemained = null ) : void{
-        $this->healthRemained = $healthRemained;
-    }
-
-    public function getHealthRemained() : float{
-        return $this->healthRemained;
-    }
-
-    public function setStrength( float $strength = null ) : void{
-        $this->strength = $strength;
-    }
-
-    public function getStrength() : float{
-        return $this->strength;
-    }
-
-    public function setDefence( float $defence = null ) : void{
-        $this->defence = $defence ;
-    }
-
-    public function getDefence() : float{
-        return $this->defence;
-    }
-
-    public function setSpeed( float $speed = null ) : void{
-        $this->speed = $speed ;
-    }
-
-    public function getSpeed() : float{
-        return $this->speed;
-    }
-
-    public function setLuck( float $luck = null ) : void{
-        $this->luck = $luck ;
-    }
-
-    public function getLuck() : float {
-        return $this->luck;
-    }
-
-    public function isDead() : bool {
-        return $this->getHealthRemained() <= 0;
-    }
-
-    public function attack() : Attack{
-        $attack = new Attack($this->getStrength());
-
-        $this->skills->modifyAttack( $attack, 'attack' );
+        $skillService->modifyAttack($attack, 'attack');
 
         return $attack;
     }
 
-    public function defend( Attack $attack ) : void{
-        if( $this->hasLuck() ){
-            GameLogs::add($this->getName().' a avut noroc si nu a fost lovit');
+    public function defend(SkillService $skillService, Fighter $fighter, Attack $attack): void
+    {
+        if ($this->hasLuck($fighter)) {
+            GameLogs::add($fighter->getName() . ' a avut noroc si nu a fost lovit');
             return;
         }
 
-        $this->skills->modifyAttack( $attack, 'defence' );
+        $skillService->modifyAttack($attack, 'defence');
 
-        $this->takeDamage($attack);
+        $this->takeDamage($fighter, $attack);
     }
 
-    public function takeDamage( Attack $attack = null ) : Attack{
-        if( $attack->getMultiplier() < 1 ){
-            $damage = ( $attack->getStrength() - $this->getDefence() ) * $attack->getMultiplier() ;
-        }else{
-            $damage = $attack->getStrength() - $this->getDefence() ;
+    public function takeDamage(Fighter $fighter, Attack $attack = null): Attack
+    {
+        if ($attack->getMultiplier() < 1) {
+            $damage = ($attack->getStrength() - $fighter->getDefence()) * $attack->getMultiplier();
+        } else {
+            $damage = $attack->getStrength() - $fighter->getDefence();
         }
-        if( $damage > 0 ){
-            $this->setHealthRemained($this->getHealthRemained() - $damage);
-            GameLogs::add($this->getName().' a fost atacat cu '.$damage.' si a mai ramas la viata cu : '.$this->getHealthRemained());
+        if ($damage > 0) {
+            $fighter->setHealthRemained($fighter->getHealthRemained() - $damage);
+            GameLogs::add($fighter->getName() . ' a fost atacat cu ' . $damage . ' si a mai ramas la viata cu : ' . $fighter->getHealthRemained());
         }
-        if( $attack->getMultiplier() - 1 > 0 ){
-            $attack->setMultiplier($attack->getMultiplier() - 1 );
-            return $this->takeDamage($attack);
+        if ($attack->getMultiplier() - 1 > 0) {
+            $attack->setMultiplier($attack->getMultiplier() - 1);
+            return $this->takeDamage($fighter, $attack);
         }
 
         return $attack;
     }
 
-    public function hasLuck() : bool {
-        return GameUtils::checkProbability($this->getLuck());
+    public function hasLuck(Fighter $fighter): bool
+    {
+        return GameUtils::checkProbability($fighter->getLuck());
     }
 
-    public function getSkills() : array {
-        return $this->skills->getAll();
+    public function getSkills(Fighter $fighter): array
+    {
+        return $fighter->skillService->getAll();
     }
-
 }

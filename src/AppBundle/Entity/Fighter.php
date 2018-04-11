@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\AppBundle;
+use AppBundle\Service\Fighter\Skill\SkillService;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -137,6 +139,10 @@ class Fighter
      */
     protected $gameFighters;
 
+    /**
+     * @var SkillService $skillService
+     */
+    public $skillService;
 
     public function __construct()
     {
@@ -345,7 +351,6 @@ class Fighter
     {
         return $this->type;
     }
-
 
     /**
      * @return mixed

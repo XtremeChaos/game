@@ -4,114 +4,75 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Fighter;
 use AppBundle\Entity\Game;
-use AppBundle\Service\Fighter\Hero;
-use AppBundle\Service\Fighter\Beast;
+use AppBundle\Entity\GameFighter;
 use AppBundle\Service\Fighter\FighterService;
-use AppBundle\Service\Fighter\Skill\SkillFacade;
+use AppBundle\Service\Fighter\Skill\SkillService;
 
 class GameService
 {
-    public $whiteTeam = [];
-    public $blackTeam = [];
-    private $whiteTeamCurrentAttacker = 0;
-    private $blackTeamCurrentAttacker = 0;
-    private $round = 0;
-    private $endRound = 20;
+    /**
+     * @var Game $game
+     */
+    private $game;
+    /**
+     * @var FighterService $fighterService
+     */
+    private $fighterService;
+    /**
+     * @var SkillService $skillService
+     */
+    private $skillService;
 
-    private function increaseRound()
+    public function addToTeam(
+        GameFighter $fighter,
+        array $teamFighters
+    ): array
     {
-        $this->round++;
+        $teamFighters[$fighter->getTeam()][] = $fighter->getFighter();
+        return $teamFighters;
     }
 
-    private function getRound()
+    private function hasTeamMembers(array $teamFighters, string $team = ''): bool
     {
-        return $this->round;
-    }
-
-    public function setEndRound($endRound = null)
-    {
-        $this->endRound = $endRound;
-    }
-
-    private function getEndRound()
-    {
-        return $this->endRound;
-    }
-
-    private function addWhiteTeam(FighterService $fighter): void
-    {
-        array_push($this->whiteTeam, $fighter);
-    }
-
-    private function addBlackTeam(FighterService $fighter): void
-    {
-        array_push($this->blackTeam, $fighter);
-    }
-
-    public function addPlayer(
-        string $team = '',
-        Fighter $fighter
-    ): void {
-        switch ($fighter->getType()) {
-            case 'hero':
-                $fighter = new Hero(new SkillFacade(), $fighter);
-                break;
-            case 'beast':
-                $fighter = new Beast(new SkillFacade(), $fighter);
-                break;
-        }
-
-        switch ($team) {
-            case 'white':
-                $this->addWhiteTeam($fighter);
-                break;
-            case 'black':
-                $this->addBlackTeam($fighter);
-                break;
-        }
-
-    }
-
-    private function hasTeamMembers(string $team = ''): bool
-    {
-        $fighters = $this->getTeam($team);
+        $fighters = $this->getTeam($teamFighters, $team);
         return count($fighters) != 0;
     }
 
 
-    private function nextTeamAttacker(string $team = ''): void
+    private function nextTeamAttacker(array $teamFighters,string $team = ''): void
     {
         switch ($team) {
             case 'white':
-                $this->nextWhiteTeamAttacker();
+                $this->nextWhiteTeamAttacker($teamFighters);
                 break;
             case 'black':
-                $this->nextBlackTeamAttacker();
+                $this->nextBlackTeamAttacker($teamFighters);
                 break;
         }
     }
 
-    private function nextWhiteTeamAttacker(): void
+    private function nextWhiteTeamAttacker(array $teamFighters): void
     {
-        $this->whiteTeamCurrentAttacker += 1;
+        $this->game->setWhiteTeamCurrentAttacker($this->game->getWhiteTeamCurrentAttacker() + 1);
 
-        if ($this->whiteTeamCurrentAttacker > count($this->whiteTeam) - 1) {
-            $this->whiteTeamCurrentAttacker = 0;
+        if ($this->game->getWhiteTeamCurrentAttacker() > count($this->getTeam($teamFighters,'white')) - 1) {
+            $this->game->setWhiteTeamCurrentAttacker(0);
         }
     }
 
-    private function nextBlackTeamAttacker(): void
+    private function nextBlackTeamAttacker(array $teamFighters): void
     {
-        $this->blackTeamCurrentAttacker += 1;
+        $this->game->setBlackTeamCurrentAttacker($this->game->getBlackTeamCurrentAttacker() + 1);
 
-        if ($this->blackTeamCurrentAttacker > count($this->blackTeam) - 1) {
-            $this->blackTeamCurrentAttacker = 0;
+        if ($this->game->getBlackTeamCurrentAttacker() > count($this->getTeam($teamFighters,'black')) - 1) {
+            $this->game->setBlackTeamCurrentAttacker(0);
         }
     }
 
-    private function getTeamDefender(string $team = ''): FighterService
+    private function getTeamDefender(array $teamFighters, string $team = ''): Fighter
     {
-        $fighters = $this->getTeam($team);
+
+        $fighters = $this->getTeam($teamFighters,$team);
         return $fighters[0];
     }
 
@@ -120,47 +81,41 @@ class GameService
         $index = null;
         switch ($team) {
             case 'white':
-                $index = $this->whiteTeamCurrentAttacker;
+                $index = $this->game->getWhiteTeamCurrentAttacker();
                 break;
             case 'black':
-                $index = $this->blackTeamCurrentAttacker;
+                $index = $this->game->getBlackTeamCurrentAttacker();
                 break;
         }
         return $index;
     }
 
-    private function getTeamAttacker(string $team = ''): FighterService
+    private function getTeamAttacker(array $teamFighters, string $team = ''): Fighter
     {
-        $teamFighters = $this->getTeam($team);
+        $fighters = $this->getTeam($teamFighters, $team);
         $current = $this->getTeamCurrentAttackerIndex($team);
-        if (empty($teamFighters[$current])) {
-            $this->nextTeamAttacker($team);
+        if (empty($fighters[$current])) {
+             $this->nextTeamAttacker($teamFighters,$team);
         }
         $current = $this->getTeamCurrentAttackerIndex($team);
-        return $teamFighters[$current];
+        return $fighters[$current];
     }
 
-    private function removeFromTeam(string $team = '', int $index = null): void
+    private function removeFromTeam(array $teamFighters, string $team = '', int $index = null): array
     {
-        switch ($team) {
-            case 'white':
-                unset($this->whiteTeam[$index]);
-                break;
-            case 'black':
-                unset($this->blackTeam[$index]);
-                break;
-        }
-        $this->sortTeam($team);
+        //@TODO metoda in entitate de scoatere din echipa
+        unset($teamFighters[$team][$index]);
+        return $this->sortTeam($teamFighters,$team);
     }
 
-    private function getFastestFighter(string $team): FighterService
+    private function getFastestFighter(array $teamFighters, string $team): Fighter
     {
-        $fighters = $this->getTeam($team);
+        $fighters = $teamFighters[$team];
         $fastestFighter = null;
         $fighterBestSpeed = 0;
         foreach ($fighters as $fighter) {
             /**
-             * @var FighterService $fighter
+             * @var Fighter $fighter
              */
             if ($fighter->getSpeed() > $fighterBestSpeed) {
                 $fighterBestSpeed = $fighter->getSpeed();
@@ -170,7 +125,7 @@ class GameService
         return $fastestFighter;
     }
 
-    private function checkFirstAttacker(FighterService $white, FighterService $black): string
+    private function checkFirstAttacker(Fighter $white, Fighter $black): string
     {
         if ($white->getSpeed() == $black->getSpeed()) {
             return $white->getLuck() >= $black->getLuck() ? 'white' : 'black';
@@ -178,36 +133,18 @@ class GameService
         return $white->getSpeed() > $black->getSpeed() ? 'white' : 'black';
     }
 
-    private function sortTeam(string $team = ''): void
+    private function sortTeam(array $teamFighters, string $team = ''): array
     {
-        usort($this->{$team . 'Team'}, array('\AppBundle\Service\GameService', 'compareFightersSpeeds'));
+        usort($teamFighters[$team], array('\AppBundle\Service\GameService', 'compareFightersSpeeds'));
+        return $teamFighters;
     }
 
-    public function getTeam(string $team): array
+    public function getTeam($teamFighters, string $team): array
     {
-        $fighters = [];
-        switch ($team) {
-            case 'white':
-                $fighters = $this->getWhiteTeam();
-                break;
-            case 'black':
-                $fighters = $this->getBlackTeam();
-                break;
-        }
-        return $fighters;
+        return $teamFighters[$team];
     }
 
-    private function getWhiteTeam(): array
-    {
-        return $this->whiteTeam;
-    }
-
-    private function getBlackTeam(): array
-    {
-        return $this->blackTeam;
-    }
-
-    private function compareFightersSpeeds(FighterService $fighterA, FighterService $fighterB): int
+    private function compareFightersSpeeds(Fighter $fighterA, Fighter $fighterB): int
     {
         if ($fighterA->getSpeed() == $fighterB->getSpeed()) {
             if ($fighterA->getLuck() == $fighterB->getLuck()) {
@@ -224,88 +161,85 @@ class GameService
 
     private function checkEndGameByRound(): bool
     {
-        return $this->getRound() > $this->getEndRound();
+        return $this->game->getRound() > $this->game->getMaxRound();
     }
 
 
-    public function startGame() : bool {
-        $this->sortTeam('white');
-        $this->sortTeam('black');
+    public function startGame(array $teamFighters): bool
+    {
+        $fastestWhiteFighter = $this->getFastestFighter($teamFighters,'white');
+        $fastestBlackFighter = $this->getFastestFighter($teamFighters,'black');
 
-        $fastestWhiteFighter = $this->getFastestFighter('white');
-        $fastestBlackFighter = $this->getFastestFighter('black');
+        $startTeamName = $this->checkFirstAttacker($fastestWhiteFighter, $fastestBlackFighter);
 
-        $startTeamName = $this->checkFirstAttacker( $fastestWhiteFighter, $fastestBlackFighter );
+        GameLogs::addStats(['white' => $this->getTeam($teamFighters,'white'), 'black' => $this->getTeam($teamFighters,'black')]);
+        GameLogs::add('Incepe echipa ' . $startTeamName);
 
-        GameLogs::addStats(['white'=> $this->getWhiteTeam(), 'black' => $this->getBlackTeam()]);
-        GameLogs::add('Incepe echipa '.$startTeamName);
+        $game = $this->startRound($teamFighters,$startTeamName);
 
-        $game = $this->startRound($startTeamName);
-
-        if( $game === false ){
+        if ($game === false) {
             GameLogs::add('A aparut o problema');
             return false;
         }
 
         GameLogs::add('Jocul s-a terminat');
 
-        GameLogs::addStats(['white'=> $this->getWhiteTeam(), 'black' => $this->getBlackTeam()]);
+        GameLogs::addStats(['white' => $this->getTeam($teamFighters,'white'), 'black' => $this->getTeam($teamFighters,'black')]);
         return true;
     }
 
-    private function startRound( string $startTeam = '' ) : bool {
-        $this->increaseRound();
-        if( $this->checkEndGameByRound() ){
-            GameLogs::add("Runda {$this->getEndRound()} s-a incheiat. Este egalitate");
+    private function startRound(array $teamFighters, string $startTeam = ''): bool
+    {
+        $this->game->increaseRound();
+        if ($this->checkEndGameByRound()) {
+            GameLogs::add("Runda {$this->game->getMaxRound()} s-a incheiat. Este egalitate");
             return true;
         }
-        GameLogs::add("Incepe runda {$this->getRound()} ");
-        switch ($startTeam){
+        GameLogs::add("Incepe runda {$this->game->getRound()} ");
+        switch ($startTeam) {
             case 'white':
-                $attacker = $this->getTeamAttacker('white');
-                $defender = $this->getTeamDefender('black');
+                $attacker = $this->getTeamAttacker($teamFighters,'white');
+                $defender = $this->getTeamDefender($teamFighters,'black');
 
                 GameLogs::add("Ataca {$attacker->getName()} cu puterea {$attacker->getStrength()} pe {$defender->getName()} care are {$defender->getDefence()} aparare si {$defender->getHealthRemained()} viata ramasa");
-                $attack = $attacker->attack();
+                $attack = $this->fighterService->attack($this->skillService, $attacker);
 
-                $defender->defend($attack);
+                $this->fighterService->defend($this->skillService, $defender, $attack);
 
-                if( $defender->isDead() ){
-                    GameLogs::add('A murit membrul echipei Black : '.$defender->getName());
-                    $this->removeFromTeam('black',0);
+                if ($this->fighterService->isDead($defender)) {
+                    GameLogs::add('A murit membrul echipei Black : ' . $defender->getName());
+                    $teamFighters = $this->removeFromTeam($teamFighters,'black', 0);
 
-                    if( !$this->hasTeamMembers('black') ){
+                    if (!$this->hasTeamMembers($teamFighters,'black')) {
                         GameLogs::add('Echipa Black a pierdut !');
                         return true;
                     }
                 }
 
-                $this->nextTeamAttacker('white');
-
-                return $this->startRound('black');
+                $this->nextTeamAttacker($teamFighters,'white');
+                return $this->startRound($teamFighters,'black');
                 break;
             case 'black':
-                $attacker = $this->getTeamAttacker( 'black' );
-                $defender = $this->getTeamDefender('white');
+                $attacker = $this->getTeamAttacker($teamFighters,'black');
+                $defender = $this->getTeamDefender($teamFighters,'white');
 
                 GameLogs::add("Ataca {$attacker->getName()} cu puterea {$attacker->getStrength()} pe {$defender->getName()} care are {$defender->getDefence()} aparare si {$defender->getHealthRemained()} viata ramasa");
-                $attack = $attacker->attack();
+                $attack = $this->fighterService->attack($this->skillService, $attacker);
 
-                $defender->defend($attack);
+                $this->fighterService->defend($this->skillService, $defender, $attack);
 
-                if( $defender->isDead() ){
-                    GameLogs::add('A murit membrul echipei White : '.$defender->getName());
+                if ($this->fighterService->isDead($defender)) {
+                    GameLogs::add('A murit membrul echipei White : ' . $defender->getName());
+                    $teamFighters = $this->removeFromTeam($teamFighters,'white', 0);
 
-                    $this->removeFromTeam('white',0 );
-
-                    if( !$this->hasTeamMembers('white') ){
+                    if (!$this->hasTeamMembers($teamFighters,'white')) {
                         GameLogs::add('Echipa White a pierdut !!');
                         return true;
                     }
                 }
 
-                $this->nextTeamAttacker('black');
-                return $this->startRound('white');
+                $this->nextTeamAttacker($teamFighters,'black');
+                return $this->startRound($teamFighters,'white');
                 break;
         }
 
@@ -313,15 +247,18 @@ class GameService
 
     }
 
-    public function start(Game $game)
+    public function start(Game $game, FighterService $fighterService, SkillService $skillService)
     {
-        $this->setEndRound($game->getMaxRound());
+        $this->game = $game;
+        $this->fighterService = $fighterService;
+        $this->skillService = $skillService;
 
-        foreach ($game->getGameFighters() as $fighter) {
-            $this->addPlayer($fighter->getTeam(),$fighter->getFighter());
+        $teamFighters = [];
+        foreach ($this->game->getGameFighters() as $fighter) {
+            $teamFighters = $this->addToTeam($fighter,$teamFighters);
         }
 
-        $this->startGame();
+        $this->startGame($teamFighters);
 
         return GameLogs::get();
     }

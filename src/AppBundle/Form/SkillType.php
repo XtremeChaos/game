@@ -13,7 +13,9 @@ class SkillType extends AbstractType
     {
         $builder
             ->add('name', TextType::class)
+            ->add('chance', TextType::class)
             ->add('className', ChoiceType::class, ['choices' => ['Magic Shield' => 'MagicShield','Rapid Strike' => 'RapidStrike','Berserk' => 'Berserk']])
+            ->add('type', ChoiceType::class, ['choices' => ['Atac' => 'attack','Aparare' => 'defence']])
             ->add('description', TextType::class)
             ->add('save', SubmitType::class)
         ;

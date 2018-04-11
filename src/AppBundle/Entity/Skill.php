@@ -46,6 +46,30 @@ class Skill
 
     /**
      * @Assert\NotBlank()
+     * @Assert\Choice({"attack", "defence"})
+     *
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", columnDefinition="enum('attack', 'defence')")
+     */
+    private $type;
+
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Type("numeric")
+     * @Assert\Range(
+     *      min = 1,
+     *      max = 60
+     * )
+     *
+     * @var string
+     *
+     * @ORM\Column(name="chance", type="decimal", precision=7, scale=3)
+     */
+    private $chance;
+
+    /**
+     * @Assert\NotBlank()
      * @Assert\Type("print")
      *
      * @var string
@@ -142,5 +166,41 @@ class Skill
     {
         return $this->description;
     }
-}
 
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param mixed $type
+     * @return Skill
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChance()
+    {
+        return $this->chance;
+    }
+
+    /**
+     * @param string $chance
+     * @return Skill
+     */
+    public function setChance(string $chance)
+    {
+        $this->chance = $chance;
+        return $this;
+    }
+
+}

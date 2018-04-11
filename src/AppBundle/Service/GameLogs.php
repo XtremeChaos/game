@@ -2,8 +2,8 @@
 
 namespace AppBundle\Service;
 
-use AppBundle\Service\Fighter\FighterService;
-use AppBundle\Service\Fighter\Skill\Listing\Skill;
+use AppBundle\Entity\Fighter;
+use AppBundle\Entity\Skill;
 
 class GameLogs{
 
@@ -26,7 +26,7 @@ class GameLogs{
                 'fighters' => []
             ];
             /**
-             * @var FighterService $fighter
+             * @var Fighter $fighter
              * @var Skill $skill
              */
             $k = 0;
