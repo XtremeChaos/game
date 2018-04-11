@@ -52,10 +52,10 @@ class Game
      */
     protected $gameFighters;
 
-    public $whiteTeamCurrentAttacker = 0;
-    public $blackTeamCurrentAttacker = 0;
-    public $round = 0;
-    public $endRound = 20;
+    private $whiteTeamCurrentAttacker = 0;
+    private $blackTeamCurrentAttacker = 0;
+    private $round = 0;
+    private $endRound = 20;
 
     public function __construct()
     {
